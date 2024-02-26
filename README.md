@@ -1,4 +1,4 @@
-# Team Project Name
+# Harnessing the Microbiome: From Microbial Genes in the Gut to Intestinal Function and Drug Absorption
 
 List of participants and affiliations:
 
