@@ -32,7 +32,10 @@ The scientific goal of the project is to build AI/ML model to predict the impact
 
 ## Collected data
 
-- The abundance of bacterial species in the gut microbiota, downloaded from [Priya. et al. Supplementary Table 13](https://static-content.springer.com/esm/art%3A10.1038%2Fs41564-022-01121-z/MediaObjects/41564_2022_1121_MOESM2_ESM.zip)
+- The abundance of bacterial species in the gut microbiota, [Supplementary Table 13](https://static-content.springer.com/esm/art%3A10.1038%2Fs41564-022-01121-z/MediaObjects/41564_2022_1121_MOESM2_ESM.zip) in Priya, S. et al.
+- [Additional file 4: Table S3](https://static-content.springer.com/esm/art%3A10.1186%2Fs13059-022-02643-9/MediaObjects/13059_2022_2643_MOESM4_ESM.xlsx) [Additional file 7: Table S6](https://static-content.springer.com/esm/art%3A10.1186%2Fs13059-022-02643-9/MediaObjects/13059_2022_2643_MOESM7_ESM.csv) in Zhou, M. el al.
+- A list of genes by isolate: mapped with uniprod_id with [Kyoto Encyclopedia of Genes and Genomes (KEGG) API](https://www.kegg.jp/kegg/rest/keggapi.html)
+- ID mapping: UniProtKB_AC-ID (Accession ID) to UniRef50 (Cluster ID)
 
 ## Results
 
@@ -45,7 +48,7 @@ Priya, S., Burns, M.B., Ward, T. et al. Identification of shared and disease-spe
 Zhou, H., Beltrán, J.F. & Brito, I.L. Host-microbiome protein-protein interactions capture disease-relevant pathways. Genome Biol 23, 72 (2022). https://doi.org/10.1186/s13059-022-02643-9
 
 ## NCBI Codeathon Disclaimer
+
 This software was created as part of an NCBI codeathon, a hackathon-style event focused on rapid innovation. While we encourage you to explore and adapt this code, please be aware that NCBI does not provide ongoing support for it.
 
 For general questions about NCBI software and tools, please visit: [NCBI Contact Page](https://www.ncbi.nlm.nih.gov/home/about/contact/)
-
