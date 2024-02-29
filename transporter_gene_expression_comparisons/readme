@@ -1,0 +1,2 @@
+This folder contains plots showing comparative gene expression of different categories of transporter genes between healthy individuals and patients 
+with ulcerative colitis (UC) and Crohn's disease (CD). These genes will be used as an output list to test when testing our AI/ML model with various parameters.
