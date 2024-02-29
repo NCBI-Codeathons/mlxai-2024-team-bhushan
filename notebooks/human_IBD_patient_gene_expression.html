@@ -1,0 +1,2630 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>This code is for the NCBI/NLM Codeathon 2024 to identify genes that are expressed in the human gut, categorize them into groups, and compare their expression between healthy and colons isolated from IBD patients</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="human_IBD_patient_gene_expression_files/libs/clipboard/clipboard.min.js"></script>
+<script src="human_IBD_patient_gene_expression_files/libs/quarto-html/quarto.js"></script>
+<script src="human_IBD_patient_gene_expression_files/libs/quarto-html/popper.min.js"></script>
+<script src="human_IBD_patient_gene_expression_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="human_IBD_patient_gene_expression_files/libs/quarto-html/anchor.min.js"></script>
+<link href="human_IBD_patient_gene_expression_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="human_IBD_patient_gene_expression_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="human_IBD_patient_gene_expression_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="human_IBD_patient_gene_expression_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="human_IBD_patient_gene_expression_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">This code is for the NCBI/NLM Codeathon 2024 to identify genes that are expressed in the human gut, categorize them into groups, and compare their expression between healthy and colons isolated from IBD patients</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="this-code-is-for-the-ncbinlm-codeathon-2024-to-identify-genes-that-are-expressed-in-the-human-gut-categorize-them-into-groups-and-compare-their-expression-between-healthy-and-colons-isolated-from-ibd-patients" class="level3">
+<h3 class="anchored" data-anchor-id="this-code-is-for-the-ncbinlm-codeathon-2024-to-identify-genes-that-are-expressed-in-the-human-gut-categorize-them-into-groups-and-compare-their-expression-between-healthy-and-colons-isolated-from-ibd-patients">This code is for the NCBI/NLM Codeathon 2024 to identify genes that are expressed in the human gut, categorize them into groups, and compare their expression between healthy and colons isolated from IBD patients</h3>
+<div id="cccf0240" class="cell" data-execution_count="70">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"openxlsx"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"gplots"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"pheatmap"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The downloaded binary packages are in
+    /var/folders/42/ffd2swy95nbbxvp_cglvr6n00000gq/T//RtmpNtTy6l/downloaded_packages
+
+The downloaded binary packages are in
+    /var/folders/42/ffd2swy95nbbxvp_cglvr6n00000gq/T//RtmpNtTy6l/downloaded_packages
+
+The downloaded binary packages are in
+    /var/folders/42/ffd2swy95nbbxvp_cglvr6n00000gq/T//RtmpNtTy6l/downloaded_packages</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>also installing the dependencies ‘colorspace’, ‘farver’, ‘labeling’, ‘munsell’, ‘viridisLite’, ‘RColorBrewer’, ‘scales’, ‘gtable’
+
+</code></pre>
+</div>
+</div>
+<p>Corrected the spreadsheet due to the excel conversion of gene names on lines 8833 - 8845:</p>
+<ul>
+<li>1-MAR -&gt; MTARC1</li>
+<li>2-MAR -&gt; MTARC2</li>
+<li>1-MAR -&gt; MARCHF1</li>
+<li>10-MAR -&gt; MARCHF10</li>
+<li>11-MAR -&gt; MARCHF11</li>
+<li>2-MAR -&gt; MARCHF2</li>
+<li>3-MAR -&gt; MARCHF3</li>
+<li>4-MAR -&gt; MARCHF4</li>
+<li>5-MAR -&gt; MARCHF5</li>
+<li>6-MAR -&gt; MARCHF6</li>
+<li>7-MAR -&gt; MARCHF7</li>
+<li>8-MAR -&gt; MARCHF8</li>
+<li>9-MAR -&gt; MARCHF9</li>
+</ul>
+<p>Reference: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9325790/</p>
+<div id="fc86ca89" class="cell" data-execution_count="171">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openxlsx)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="st">"../data/Priya_et_al_Supplementary_Tables/Supplementary Tables S12-S17.xlsx"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># getting data from sheets</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>sheets <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">getSheetNames</span>(file_path)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sheets)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>data_frame <span class="ot">&lt;-</span> <span class="fu">lapply</span>(sheets, openxlsx<span class="sc">::</span>read.xlsx, <span class="at">xlsxFile=</span>file_path)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># assign names to data frame</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_frame) <span class="ot">&lt;-</span> sheets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "S12" "S13" "S14" "S15" "S16" "S17"</code></pre>
+</div>
+</div>
+<div id="c10ea25c-b4db-48a3-82d2-9ef7f5b79c19" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="38a90ade" class="cell" data-scrolled="false" data-execution_count="172">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Load gene expression matrix across patients</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> data_frame<span class="sc">$</span>S14</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 79</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">X1</th>
+<th data-quarto-table-cell-role="th" scope="col">C3002</th>
+<th data-quarto-table-cell-role="th" scope="col">C3003</th>
+<th data-quarto-table-cell-role="th" scope="col">C3004</th>
+<th data-quarto-table-cell-role="th" scope="col">C3005</th>
+<th data-quarto-table-cell-role="th" scope="col">C3006</th>
+<th data-quarto-table-cell-role="th" scope="col">C3011</th>
+<th data-quarto-table-cell-role="th" scope="col">C3015</th>
+<th data-quarto-table-cell-role="th" scope="col">C3016</th>
+<th data-quarto-table-cell-role="th" scope="col">C3017</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">P6009</th>
+<th data-quarto-table-cell-role="th" scope="col">P6012</th>
+<th data-quarto-table-cell-role="th" scope="col">P6013</th>
+<th data-quarto-table-cell-role="th" scope="col">P6014</th>
+<th data-quarto-table-cell-role="th" scope="col">P6016</th>
+<th data-quarto-table-cell-role="th" scope="col">P6017</th>
+<th data-quarto-table-cell-role="th" scope="col">P6018</th>
+<th data-quarto-table-cell-role="th" scope="col">P6024</th>
+<th data-quarto-table-cell-role="th" scope="col">P6025</th>
+<th data-quarto-table-cell-role="th" scope="col">P6028</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;chr&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">1</td>
+<td>A1BG</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>5</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>⋯</td>
+<td>6</td>
+<td>5</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">2</td>
+<td>A1CF</td>
+<td>2225</td>
+<td>5636</td>
+<td>2777</td>
+<td>2662</td>
+<td>1461</td>
+<td>696</td>
+<td>1842</td>
+<td>557</td>
+<td>4509</td>
+<td>⋯</td>
+<td>1558</td>
+<td>1972</td>
+<td>2127</td>
+<td>10929</td>
+<td>5952</td>
+<td>2948</td>
+<td>2350</td>
+<td>2239</td>
+<td>3975</td>
+<td>3359</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">3</td>
+<td>A2M</td>
+<td>8957</td>
+<td>24572</td>
+<td>75820</td>
+<td>4988</td>
+<td>43441</td>
+<td>65878</td>
+<td>27366</td>
+<td>44210</td>
+<td>18346</td>
+<td>⋯</td>
+<td>31922</td>
+<td>87544</td>
+<td>36194</td>
+<td>12458</td>
+<td>36712</td>
+<td>23725</td>
+<td>22523</td>
+<td>40459</td>
+<td>24306</td>
+<td>5985</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">4</td>
+<td>A2ML1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>⋯</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">5</td>
+<td>A3GALT2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>⋯</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">6</td>
+<td>A4GALT</td>
+<td>31</td>
+<td>56</td>
+<td>271</td>
+<td>34</td>
+<td>490</td>
+<td>321</td>
+<td>394</td>
+<td>1132</td>
+<td>128</td>
+<td>⋯</td>
+<td>277</td>
+<td>451</td>
+<td>259</td>
+<td>88</td>
+<td>116</td>
+<td>154</td>
+<td>174</td>
+<td>287</td>
+<td>65</td>
+<td>58</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="a9aa2341" class="cell" data-scrolled="false" data-execution_count="173">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>genes.list <span class="ot">&lt;-</span> df<span class="sc">$</span>X1</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(df) <span class="ot">&lt;-</span> genes.list</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 79</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">X1</th>
+<th data-quarto-table-cell-role="th" scope="col">C3002</th>
+<th data-quarto-table-cell-role="th" scope="col">C3003</th>
+<th data-quarto-table-cell-role="th" scope="col">C3004</th>
+<th data-quarto-table-cell-role="th" scope="col">C3005</th>
+<th data-quarto-table-cell-role="th" scope="col">C3006</th>
+<th data-quarto-table-cell-role="th" scope="col">C3011</th>
+<th data-quarto-table-cell-role="th" scope="col">C3015</th>
+<th data-quarto-table-cell-role="th" scope="col">C3016</th>
+<th data-quarto-table-cell-role="th" scope="col">C3017</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">P6009</th>
+<th data-quarto-table-cell-role="th" scope="col">P6012</th>
+<th data-quarto-table-cell-role="th" scope="col">P6013</th>
+<th data-quarto-table-cell-role="th" scope="col">P6014</th>
+<th data-quarto-table-cell-role="th" scope="col">P6016</th>
+<th data-quarto-table-cell-role="th" scope="col">P6017</th>
+<th data-quarto-table-cell-role="th" scope="col">P6018</th>
+<th data-quarto-table-cell-role="th" scope="col">P6024</th>
+<th data-quarto-table-cell-role="th" scope="col">P6025</th>
+<th data-quarto-table-cell-role="th" scope="col">P6028</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;chr&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>A1BG</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>5</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>⋯</td>
+<td>6</td>
+<td>5</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>A1CF</td>
+<td>2225</td>
+<td>5636</td>
+<td>2777</td>
+<td>2662</td>
+<td>1461</td>
+<td>696</td>
+<td>1842</td>
+<td>557</td>
+<td>4509</td>
+<td>⋯</td>
+<td>1558</td>
+<td>1972</td>
+<td>2127</td>
+<td>10929</td>
+<td>5952</td>
+<td>2948</td>
+<td>2350</td>
+<td>2239</td>
+<td>3975</td>
+<td>3359</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>A2M</td>
+<td>8957</td>
+<td>24572</td>
+<td>75820</td>
+<td>4988</td>
+<td>43441</td>
+<td>65878</td>
+<td>27366</td>
+<td>44210</td>
+<td>18346</td>
+<td>⋯</td>
+<td>31922</td>
+<td>87544</td>
+<td>36194</td>
+<td>12458</td>
+<td>36712</td>
+<td>23725</td>
+<td>22523</td>
+<td>40459</td>
+<td>24306</td>
+<td>5985</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>A2ML1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>⋯</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>A3GALT2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>⋯</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>A4GALT</td>
+<td>31</td>
+<td>56</td>
+<td>271</td>
+<td>34</td>
+<td>490</td>
+<td>321</td>
+<td>394</td>
+<td>1132</td>
+<td>128</td>
+<td>⋯</td>
+<td>277</td>
+<td>451</td>
+<td>259</td>
+<td>88</td>
+<td>116</td>
+<td>154</td>
+<td>174</td>
+<td>287</td>
+<td>65</td>
+<td>58</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="856614b9" class="cell" data-execution_count="174">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(df, <span class="st">"../data/human_gene_exp_IBD.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="46d2e7c7" class="cell" data-scrolled="true" data-execution_count="175">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[, <span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1</span>)]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 78</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">C3002</th>
+<th data-quarto-table-cell-role="th" scope="col">C3003</th>
+<th data-quarto-table-cell-role="th" scope="col">C3004</th>
+<th data-quarto-table-cell-role="th" scope="col">C3005</th>
+<th data-quarto-table-cell-role="th" scope="col">C3006</th>
+<th data-quarto-table-cell-role="th" scope="col">C3011</th>
+<th data-quarto-table-cell-role="th" scope="col">C3015</th>
+<th data-quarto-table-cell-role="th" scope="col">C3016</th>
+<th data-quarto-table-cell-role="th" scope="col">C3017</th>
+<th data-quarto-table-cell-role="th" scope="col">C3021</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">P6009</th>
+<th data-quarto-table-cell-role="th" scope="col">P6012</th>
+<th data-quarto-table-cell-role="th" scope="col">P6013</th>
+<th data-quarto-table-cell-role="th" scope="col">P6014</th>
+<th data-quarto-table-cell-role="th" scope="col">P6016</th>
+<th data-quarto-table-cell-role="th" scope="col">P6017</th>
+<th data-quarto-table-cell-role="th" scope="col">P6018</th>
+<th data-quarto-table-cell-role="th" scope="col">P6024</th>
+<th data-quarto-table-cell-role="th" scope="col">P6025</th>
+<th data-quarto-table-cell-role="th" scope="col">P6028</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>5</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>⋯</td>
+<td>6</td>
+<td>5</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>2225</td>
+<td>5636</td>
+<td>2777</td>
+<td>2662</td>
+<td>1461</td>
+<td>696</td>
+<td>1842</td>
+<td>557</td>
+<td>4509</td>
+<td>1354</td>
+<td>⋯</td>
+<td>1558</td>
+<td>1972</td>
+<td>2127</td>
+<td>10929</td>
+<td>5952</td>
+<td>2948</td>
+<td>2350</td>
+<td>2239</td>
+<td>3975</td>
+<td>3359</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>8957</td>
+<td>24572</td>
+<td>75820</td>
+<td>4988</td>
+<td>43441</td>
+<td>65878</td>
+<td>27366</td>
+<td>44210</td>
+<td>18346</td>
+<td>58609</td>
+<td>⋯</td>
+<td>31922</td>
+<td>87544</td>
+<td>36194</td>
+<td>12458</td>
+<td>36712</td>
+<td>23725</td>
+<td>22523</td>
+<td>40459</td>
+<td>24306</td>
+<td>5985</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>⋯</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>⋯</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>31</td>
+<td>56</td>
+<td>271</td>
+<td>34</td>
+<td>490</td>
+<td>321</td>
+<td>394</td>
+<td>1132</td>
+<td>128</td>
+<td>560</td>
+<td>⋯</td>
+<td>277</td>
+<td>451</td>
+<td>259</td>
+<td>88</td>
+<td>116</td>
+<td>154</td>
+<td>174</td>
+<td>287</td>
+<td>65</td>
+<td>58</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="17bba012" class="cell" data-execution_count="176">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Load the metadata</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../data/human_IBD_patient_metadata.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="2e1784ef" class="cell" data-scrolled="true" data-execution_count="177">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Now change the column names of the dataframe from patient IDs to IBD vs nonIBD</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>new_column_names <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">colnames</span>(df), <span class="cf">function</span> (id){</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  col_ids <span class="ot">&lt;-</span> meta[<span class="fu">which</span>(meta<span class="sc">$</span>Participant_ID <span class="sc">==</span> id), <span class="st">"Diagnosis"</span>]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(col_ids)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># new_column_names</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="adda4e4d" class="cell" data-execution_count="178">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Convert the list to a character vector</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>new_column_names <span class="ot">&lt;-</span> <span class="fu">unlist</span>(new_column_names)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Replace column names of dataframe</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df) <span class="ot">&lt;-</span> new_column_names</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="7486dab4" class="cell" data-execution_count="179">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 78</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">CD</th>
+<th data-quarto-table-cell-role="th" scope="col">UC</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.1</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.2</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.3</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.4</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.5</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.1</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.2</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.3</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">CD</th>
+<th data-quarto-table-cell-role="th" scope="col">UC</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.1</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.1</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.1</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.2</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.2</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.2</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.3</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>5</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>⋯</td>
+<td>6</td>
+<td>5</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>2225</td>
+<td>5636</td>
+<td>2777</td>
+<td>2662</td>
+<td>1461</td>
+<td>696</td>
+<td>1842</td>
+<td>557</td>
+<td>4509</td>
+<td>1354</td>
+<td>⋯</td>
+<td>1558</td>
+<td>1972</td>
+<td>2127</td>
+<td>10929</td>
+<td>5952</td>
+<td>2948</td>
+<td>2350</td>
+<td>2239</td>
+<td>3975</td>
+<td>3359</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>8957</td>
+<td>24572</td>
+<td>75820</td>
+<td>4988</td>
+<td>43441</td>
+<td>65878</td>
+<td>27366</td>
+<td>44210</td>
+<td>18346</td>
+<td>58609</td>
+<td>⋯</td>
+<td>31922</td>
+<td>87544</td>
+<td>36194</td>
+<td>12458</td>
+<td>36712</td>
+<td>23725</td>
+<td>22523</td>
+<td>40459</td>
+<td>24306</td>
+<td>5985</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>⋯</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>⋯</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>31</td>
+<td>56</td>
+<td>271</td>
+<td>34</td>
+<td>490</td>
+<td>321</td>
+<td>394</td>
+<td>1132</td>
+<td>128</td>
+<td>560</td>
+<td>⋯</td>
+<td>277</td>
+<td>451</td>
+<td>259</td>
+<td>88</td>
+<td>116</td>
+<td>154</td>
+<td>174</td>
+<td>287</td>
+<td>65</td>
+<td>58</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="07c8baa2" class="cell" data-execution_count="180">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Save new dataframe</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(df, <span class="st">"../data/human_gene_exp_IBD_new.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="8090e730" class="cell" data-execution_count="181">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Calculate mean expression for the 3 categories</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="do">##Isolate the three datasets to calculate the mean expression for each category</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>df.cd <span class="ot">&lt;-</span> df[, <span class="fu">which</span>(<span class="fu">colnames</span>(df) <span class="sc">==</span> <span class="st">"CD"</span>)]</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>df.uc <span class="ot">&lt;-</span> df[, <span class="fu">which</span>(<span class="fu">colnames</span>(df) <span class="sc">==</span> <span class="st">"UC"</span>)]</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>df.nonibd <span class="ot">&lt;-</span> df[, <span class="fu">which</span>(<span class="fu">colnames</span>(df) <span class="sc">==</span> <span class="st">"nonIBD"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="5a690adb" class="cell" data-scrolled="true" data-execution_count="182">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.cd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 34</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">CD</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.1</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.2</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.3</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.4</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.5</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.6</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.7</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.8</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.9</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.24</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.25</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.26</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.27</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.28</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.29</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.30</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.31</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.32</th>
+<th data-quarto-table-cell-role="th" scope="col">CD.33</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>4</td>
+<td>⋯</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>3</td>
+<td>1</td>
+<td>6</td>
+<td>1</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>2225</td>
+<td>557</td>
+<td>4509</td>
+<td>1354</td>
+<td>2435</td>
+<td>1938</td>
+<td>1574</td>
+<td>3072</td>
+<td>3059</td>
+<td>302</td>
+<td>⋯</td>
+<td>3894</td>
+<td>4305</td>
+<td>1112</td>
+<td>3065</td>
+<td>2590</td>
+<td>2633</td>
+<td>1558</td>
+<td>5952</td>
+<td>2239</td>
+<td>3359</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>8957</td>
+<td>44210</td>
+<td>18346</td>
+<td>58609</td>
+<td>32286</td>
+<td>21338</td>
+<td>26940</td>
+<td>33594</td>
+<td>28439</td>
+<td>37918</td>
+<td>⋯</td>
+<td>25323</td>
+<td>41981</td>
+<td>13186</td>
+<td>27552</td>
+<td>20895</td>
+<td>10474</td>
+<td>31922</td>
+<td>36712</td>
+<td>40459</td>
+<td>5985</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>⋯</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>⋯</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>31</td>
+<td>1132</td>
+<td>128</td>
+<td>560</td>
+<td>127</td>
+<td>121</td>
+<td>211</td>
+<td>256</td>
+<td>64</td>
+<td>735</td>
+<td>⋯</td>
+<td>125</td>
+<td>173</td>
+<td>126</td>
+<td>149</td>
+<td>150</td>
+<td>73</td>
+<td>277</td>
+<td>116</td>
+<td>287</td>
+<td>58</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="66202c0e" class="cell" data-scrolled="true" data-execution_count="168">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.uc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 22</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">UC</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.1</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.2</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.3</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.4</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.5</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.6</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.7</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.8</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.9</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.12</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.13</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.14</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.15</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.16</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.17</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.18</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.19</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.20</th>
+<th data-quarto-table-cell-role="th" scope="col">UC.21</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>5</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>⋯</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+<td>3</td>
+<td>6</td>
+<td>5</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>2225</td>
+<td>5636</td>
+<td>2777</td>
+<td>2662</td>
+<td>1461</td>
+<td>696</td>
+<td>1938</td>
+<td>3072</td>
+<td>2241</td>
+<td>3059</td>
+<td>⋯</td>
+<td>3476</td>
+<td>5141</td>
+<td>2894</td>
+<td>2351</td>
+<td>3894</td>
+<td>3911</td>
+<td>2590</td>
+<td>1558</td>
+<td>1972</td>
+<td>2239</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>8957</td>
+<td>24572</td>
+<td>75820</td>
+<td>4988</td>
+<td>43441</td>
+<td>65878</td>
+<td>21338</td>
+<td>33594</td>
+<td>26769</td>
+<td>28439</td>
+<td>⋯</td>
+<td>7533</td>
+<td>5654</td>
+<td>15979</td>
+<td>27285</td>
+<td>25323</td>
+<td>18457</td>
+<td>20895</td>
+<td>31922</td>
+<td>87544</td>
+<td>40459</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>⋯</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>⋯</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>31</td>
+<td>56</td>
+<td>271</td>
+<td>34</td>
+<td>490</td>
+<td>321</td>
+<td>121</td>
+<td>256</td>
+<td>63</td>
+<td>64</td>
+<td>⋯</td>
+<td>154</td>
+<td>32</td>
+<td>132</td>
+<td>116</td>
+<td>125</td>
+<td>149</td>
+<td>150</td>
+<td>277</td>
+<td>451</td>
+<td>287</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="559ee933" class="cell" data-execution_count="169">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.nonibd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 22</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.1</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.2</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.3</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.4</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.5</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.6</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.7</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.8</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.9</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.12</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.13</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.14</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.15</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.16</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.17</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.18</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.19</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.20</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD.21</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">⋯</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>4</td>
+<td>0</td>
+<td>⋯</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>1354</td>
+<td>3462</td>
+<td>3616</td>
+<td>3360</td>
+<td>4172</td>
+<td>2341</td>
+<td>4997</td>
+<td>3158</td>
+<td>3444</td>
+<td>2730</td>
+<td>⋯</td>
+<td>942</td>
+<td>3761</td>
+<td>2219</td>
+<td>2280</td>
+<td>4372</td>
+<td>496</td>
+<td>4359</td>
+<td>2127</td>
+<td>5952</td>
+<td>2948</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>58609</td>
+<td>26193</td>
+<td>21167</td>
+<td>32729</td>
+<td>26799</td>
+<td>27984</td>
+<td>5630</td>
+<td>32295</td>
+<td>6813</td>
+<td>26427</td>
+<td>⋯</td>
+<td>37843</td>
+<td>21473</td>
+<td>19711</td>
+<td>13940</td>
+<td>26737</td>
+<td>47488</td>
+<td>24096</td>
+<td>36194</td>
+<td>36712</td>
+<td>23725</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>⋯</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>1</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>⋯</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>560</td>
+<td>199</td>
+<td>107</td>
+<td>201</td>
+<td>123</td>
+<td>292</td>
+<td>37</td>
+<td>205</td>
+<td>229</td>
+<td>150</td>
+<td>⋯</td>
+<td>401</td>
+<td>93</td>
+<td>93</td>
+<td>65</td>
+<td>111</td>
+<td>506</td>
+<td>85</td>
+<td>259</td>
+<td>116</td>
+<td>154</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="bdbc93ad" class="cell" data-execution_count="183">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Calculate mean</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df.cd<span class="sc">$</span>mean.exp <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df.cd)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>df.uc<span class="sc">$</span>mean.exp <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df.uc)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>df.nonibd<span class="sc">$</span>mean.exp <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df.nonibd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="49b8c66c" class="cell" data-execution_count="196">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Now cbind the mean expression columns</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>dx <span class="ot">&lt;-</span> <span class="fu">cbind</span>(df.cd<span class="sc">$</span>mean.exp, <span class="fu">cbind</span>(df.uc<span class="sc">$</span>mean.exp, df.nonibd<span class="sc">$</span>mean.exp))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(dx) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(df)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dx) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CD"</span>, <span class="st">"UC"</span>, <span class="st">"nonIBD"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="21402e2d" class="cell" data-scrolled="true" data-execution_count="197">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A matrix: 6 × 3 of type dbl</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">CD</th>
+<th data-quarto-table-cell-role="th" scope="col">UC</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>1.147059e+00</td>
+<td>1.545455e+00</td>
+<td>1.272727e+00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>3.044706e+03</td>
+<td>2.775545e+03</td>
+<td>3.132227e+03</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>2.427091e+04</td>
+<td>3.001482e+04</td>
+<td>2.097550e+04</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>5.588235e-01</td>
+<td>3.636364e-01</td>
+<td>5.909091e-01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>5.294118e-01</td>
+<td>6.818182e-01</td>
+<td>2.727273e-01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>1.909118e+02</td>
+<td>1.990909e+02</td>
+<td>1.518636e+02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="e324ecd2" class="cell" data-execution_count="112">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Now use this dataframe to make dotplots for specific sets of transporter genes</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="do">##Set the genes for which I will plot dotplots</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>abc.transporters <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"ABC"</span>, <span class="fu">rownames</span>(df), <span class="at">value =</span> T)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>slc.transporters <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"SLC"</span>, <span class="fu">rownames</span>(df), <span class="at">value =</span> T)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>aqp.transporters <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"AQP"</span>, <span class="fu">rownames</span>(df), <span class="at">value =</span> T)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>cyp.genes <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"CYP"</span>, <span class="fu">rownames</span>(df), <span class="at">value =</span> T)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>kcn.genes <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"KCN"</span>, <span class="fu">rownames</span>(df), <span class="at">value =</span> T)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>trpv.genes <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"TRPV"</span>, <span class="fu">rownames</span>(df), <span class="at">value =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="ba4661ee" class="cell" data-execution_count="122">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>get_gene_expression_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data, genes){</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">t</span>(data[genes,])</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="7328a2e0" class="cell" data-scrolled="true" data-execution_count="123">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>abc.gene_expression_data <span class="ot">&lt;-</span> <span class="fu">get_gene_expression_data</span>(dx, abc.transporters)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>slc.gene_expression_data <span class="ot">&lt;-</span> <span class="fu">get_gene_expression_data</span>(dx, slc.transporters)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>aqp.gene_expression_data <span class="ot">&lt;-</span> <span class="fu">get_gene_expression_data</span>(dx, aqp.transporters)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>cyp.gene_expression_data <span class="ot">&lt;-</span> <span class="fu">get_gene_expression_data</span>(dx, cyp.genes)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>kcn.gene_expression_data <span class="ot">&lt;-</span> <span class="fu">get_gene_expression_data</span>(dx, kcn.genes)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>trpv.gene_expression_data <span class="ot">&lt;-</span> <span class="fu">get_gene_expression_data</span>(dx, trpv.genes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="962cb53c" class="cell" data-execution_count="135">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the heatmap</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gplots)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>draw_heatmap <span class="ot">&lt;-</span> <span class="cf">function</span>(data, gene_name) {</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     output_pdf = paste("../data/plots/", gene_name, ".pdf")</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     pdf(output_pdf, width = 24, height = 24)</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     pdf("../data/plots/TRPV_channels_transporter_heatmap.pdf", width = 24, height = 24)</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    title <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">"Gene Expression Heatmap"</span>, <span class="st">"-"</span>, gene_name)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">heatmap.2</span>(<span class="fu">as.matrix</span>(data),</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">dendrogram =</span> <span class="st">"none"</span>,      <span class="co"># Add dendrogram for rows</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">trace =</span> <span class="st">"none"</span>,          <span class="co"># Remove trace</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">10</span>),      <span class="co"># Add margins</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">256</span>, <span class="at">palette =</span> <span class="st">"viridis"</span>),  <span class="co"># Color scheme</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>          <span class="at">main =</span> title,</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">"Genes"</span>,</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">"Conditions"</span>)    </span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co">#     dev.off()</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="ab4ea975" class="cell" data-scrolled="true" data-execution_count="134">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_heatmap</span>(abc.gene_expression_data, <span class="st">"ABC"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_heatmap</span>(slc.gene_expression_data, <span class="st">"SLC"</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_heatmap</span>(aqp.gene_expression_data, <span class="st">"AQP"</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_heatmap</span>(cyp.gene_expression_data, <span class="st">"CYP"</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_heatmap</span>(kcn.gene_expression_data, <span class="st">"KCN"</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_heatmap</span>(trpv.gene_expression_data, <span class="st">"TRPV"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="human_IBD_patient_gene_expression_files/figure-html/cell-26-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="human_IBD_patient_gene_expression_files/figure-html/cell-26-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="human_IBD_patient_gene_expression_files/figure-html/cell-26-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="human_IBD_patient_gene_expression_files/figure-html/cell-26-output-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="human_IBD_patient_gene_expression_files/figure-html/cell-26-output-5.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="human_IBD_patient_gene_expression_files/figure-html/cell-26-output-6.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="70bedbe0" class="cell" data-execution_count="147">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>selected_slc <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"SLC10A2"</span>, <span class="st">"SLC15A1"</span>, <span class="st">"SLC16A1"</span>, <span class="st">"SLC22A1"</span>, <span class="st">"SLC22A2"</span>, </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"SLC22A3"</span>, <span class="st">"SLC22A4"</span>, <span class="st">"SLC22A5"</span>, <span class="st">"SLC22A6"</span>, <span class="st">"SLC22A7"</span>, </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"SLC22A8"</span>, <span class="st">"SLC28A2"</span>, <span class="st">"SLC29A1"</span>, <span class="st">"SLC29A2"</span>, <span class="st">"SLC51A"</span>, </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">"SLC51B"</span>, <span class="st">"SLCO2B1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="4fb1f71b" class="cell" data-execution_count="148">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>selected_slc.gene_expression_data <span class="ot">&lt;-</span> <span class="fu">get_gene_expression_data</span>(dx, selected_slc)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_heatmap</span>(selected_slc.gene_expression_data, <span class="st">"Selected_SLC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="human_IBD_patient_gene_expression_files/figure-html/cell-28-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="67277aa4" class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>abc.gene_expression_data</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>slc.gene_expression_data</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>aqp.gene_expression_data</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>cyp.gene_expression_data</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>kcn.gene_expression_data</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>trpv.gene_expression_data</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>selected_slc.gene_expression_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="c57a4e0e" class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Do a significance test to get only a few genes for each category</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform t-test for each gene</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="854a4f5b" class="cell" data-scrolled="true" data-execution_count="195">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gene_expression_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A matrix: 6 × 3 of type dbl</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">CD</th>
+<th data-quarto-table-cell-role="th" scope="col">UC</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">SLC10A2</td>
+<td>17.235294</td>
+<td>76.681818</td>
+<td>1259.8181818</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">SLC15A1</td>
+<td>930.205882</td>
+<td>745.181818</td>
+<td>2161.5000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">SLC16A1</td>
+<td>5748.382353</td>
+<td>5755.772727</td>
+<td>6118.4090909</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">SLC22A1</td>
+<td>10.352941</td>
+<td>6.909091</td>
+<td>8.4090909</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">SLC22A2</td>
+<td>1.588235</td>
+<td>1.227273</td>
+<td>0.8181818</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">SLC22A3</td>
+<td>62.911765</td>
+<td>103.454545</td>
+<td>111.5000000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="ddbb2083" class="cell" data-scrolled="false" data-execution_count="198">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dx)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A matrix: 6 × 3 of type dbl</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">CD</th>
+<th data-quarto-table-cell-role="th" scope="col">UC</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>1.147059e+00</td>
+<td>1.545455e+00</td>
+<td>1.272727e+00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>3.044706e+03</td>
+<td>2.775545e+03</td>
+<td>3.132227e+03</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>2.427091e+04</td>
+<td>3.001482e+04</td>
+<td>2.097550e+04</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>5.588235e-01</td>
+<td>3.636364e-01</td>
+<td>5.909091e-01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>5.294118e-01</td>
+<td>6.818182e-01</td>
+<td>2.727273e-01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>1.909118e+02</td>
+<td>1.990909e+02</td>
+<td>1.518636e+02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class="list-inline"><li>'CD'</li><li>'UC'</li><li>'nonIBD'</li></ol>
+</div>
+</div>
+<div id="912b6423" class="cell" data-execution_count="214">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df_for_ptest <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(dx)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_for_ptest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 3</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">CD</th>
+<th data-quarto-table-cell-role="th" scope="col">UC</th>
+<th data-quarto-table-cell-role="th" scope="col">nonIBD</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>1.147059e+00</td>
+<td>1.545455e+00</td>
+<td>1.272727e+00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>3.044706e+03</td>
+<td>2.775545e+03</td>
+<td>3.132227e+03</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>2.427091e+04</td>
+<td>3.001482e+04</td>
+<td>2.097550e+04</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>5.588235e-01</td>
+<td>3.636364e-01</td>
+<td>5.909091e-01</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>5.294118e-01</td>
+<td>6.818182e-01</td>
+<td>2.727273e-01</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>1.909118e+02</td>
+<td>1.990909e+02</td>
+<td>1.518636e+02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="68ee82c6" class="cell" data-execution_count="216">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform t-test for each gene for UC patient data</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>p_value_uc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">"pvalue"</span> <span class="ot">=</span> <span class="fu">sapply</span>(<span class="fu">rownames</span>(df_for_ptest), <span class="cf">function</span>(gene) </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t.test</span>(df_for_ptest<span class="sc">$</span>nonIBD, df_for_ptest<span class="sc">$</span>UC)<span class="sc">$</span>p.value), <span class="at">row.names =</span> <span class="fu">rownames</span>(df_for_ptest))</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(p_value_uc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 1</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">pvalue</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>0.05209378</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>0.05209378</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>0.05209378</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>0.05209378</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>0.05209378</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>0.05209378</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="d74f226a" class="cell" data-execution_count="218">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Bonferroni correction</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>num_tests <span class="ot">&lt;-</span> <span class="fu">nrow</span>(p_value_uc)  <span class="co"># Number of tests (number of genes)</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>num_tests</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+18315
+</div>
+</div>
+<div id="9955a39a" class="cell" data-execution_count="223">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Apply Bonferroni correction to the p-values</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>p_values_corrected <span class="ot">&lt;-</span> <span class="fu">p.adjust</span>(p_value_uc<span class="sc">$</span>pvalue, <span class="at">method =</span> <span class="st">"bonferroni"</span>, <span class="at">n =</span> num_tests)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the corrected p-values to the dataframe</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>p_value_uc<span class="sc">$</span>corrected_p_value <span class="ot">&lt;-</span> p_values_corrected</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(p_value_uc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 2</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">pvalue</th>
+<th data-quarto-table-cell-role="th" scope="col">corrected_p_value</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>0.05209378</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>0.05209378</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>0.05209378</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>0.05209378</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>0.05209378</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>0.05209378</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="898b4af1" class="cell" data-execution_count="224">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify significant genes based on corrected p-values (e.g., corrected p &lt; 0.05)</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>significant_genes_uc <span class="ot">&lt;-</span> <span class="fu">rownames</span>(p_value_uc)[p_value_uc<span class="sc">$</span>corrected_p_value <span class="sc">&lt;</span> <span class="fl">0.05</span>]</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>significant_genes_uc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<div id="e2886459-a0e9-4a94-bce9-11b0b642672b" class="cell" data-execution_count="229">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform t-test for each gene for CD patient data</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>p_value_cd <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">"pvalue"</span> <span class="ot">=</span> <span class="fu">sapply</span>(<span class="fu">rownames</span>(df_for_ptest), <span class="cf">function</span>(gene) </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t.test</span>(df_for_ptest<span class="sc">$</span>nonIBD, df_for_ptest<span class="sc">$</span>CD, <span class="at">paired =</span> T)<span class="sc">$</span>p.value), <span class="at">row.names =</span> <span class="fu">rownames</span>(df_for_ptest))</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Bonferroni correction</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>num_tests <span class="ot">&lt;-</span> <span class="fu">nrow</span>(p_value_cd)  <span class="co"># Number of tests (number of genes)</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Bonferroni correction to the p-values</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>p_values_corrected <span class="ot">&lt;-</span> <span class="fu">p.adjust</span>(p_value_cd<span class="sc">$</span>pvalue, <span class="at">method =</span> <span class="st">"bonferroni"</span>, <span class="at">n =</span> num_tests)</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the corrected p-values to the dataframe</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>p_value_cd<span class="sc">$</span>corrected_p_value <span class="ot">&lt;-</span> p_values_corrected</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(p_value_cd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>A data.frame: 6 × 2</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">pvalue</th>
+<th data-quarto-table-cell-role="th" scope="col">corrected_p_value</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+<th data-quarto-table-cell-role="th" scope="col">&lt;dbl&gt;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A1BG</td>
+<td>7.958763e-66</td>
+<td>1.457647e-61</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A1CF</td>
+<td>7.958763e-66</td>
+<td>1.457647e-61</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A2M</td>
+<td>7.958763e-66</td>
+<td>1.457647e-61</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A2ML1</td>
+<td>7.958763e-66</td>
+<td>1.457647e-61</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" scope="row">A3GALT2</td>
+<td>7.958763e-66</td>
+<td>1.457647e-61</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th" scope="row">A4GALT</td>
+<td>7.958763e-66</td>
+<td>1.457647e-61</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="42b9bc36" class="cell" data-execution_count="230">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify significant genes based on corrected p-values (e.g., corrected p &lt; 0.05)</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>significant_genes_cd <span class="ot">&lt;-</span> <span class="fu">rownames</span>(p_value_cd)[p_value_cd<span class="sc">$</span>corrected_p_value <span class="sc">&lt;</span> <span class="fl">0.05</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="c7294ab1" class="cell" data-scrolled="false" data-execution_count="231">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>significant_genes_cd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class="list-inline"><li>'A1BG'</li><li>'A1CF'</li><li>'A2M'</li><li>'A2ML1'</li><li>'A3GALT2'</li><li>'A4GALT'</li><li>'A4GNT'</li><li>'AAAS'</li><li>'AACS'</li><li>'AADAC'</li><li>'AADACL2'</li><li>'AADACL3'</li><li>'AADACL4'</li><li>'AADAT'</li><li>'AAGAB'</li><li>'AAK1'</li><li>'AAMDC'</li><li>'AAMP'</li><li>'AANAT'</li><li>'AAR2'</li><li>'AARD'</li><li>'AARS'</li><li>'AARS2'</li><li>'AARSD1'</li><li>'AASDH'</li><li>'AASDHPPT'</li><li>'AASS'</li><li>'AATF'</li><li>'AATK'</li><li>'ABAT'</li><li>'ABCA1'</li><li>'ABCA10'</li><li>'ABCA12'</li><li>'ABCA13'</li><li>'ABCA2'</li><li>'ABCA3'</li><li>'ABCA4'</li><li>'ABCA5'</li><li>'ABCA6'</li><li>'ABCA7'</li><li>'ABCA8'</li><li>'ABCA9'</li><li>'ABCB1'</li><li>'ABCB10'</li><li>'ABCB11'</li><li>'ABCB4'</li><li>'ABCB5'</li><li>'ABCB6'</li><li>'ABCB7'</li><li>'ABCB8'</li><li>'ABCB9'</li><li>'ABCC1'</li><li>'ABCC10'</li><li>'ABCC11'</li><li>'ABCC12'</li><li>'ABCC2'</li><li>'ABCC3'</li><li>'ABCC4'</li><li>'ABCC5'</li><li>'ABCC6'</li><li>'ABCC8'</li><li>'ABCC9'</li><li>'ABCD1'</li><li>'ABCD2'</li><li>'ABCD3'</li><li>'ABCD4'</li><li>'ABCE1'</li><li>'ABCF1'</li><li>'ABCF2'</li><li>'ABCF3'</li><li>'ABCG1'</li><li>'ABCG2'</li><li>'ABCG4'</li><li>'ABCG5'</li><li>'ABCG8'</li><li>'ABHD1'</li><li>'ABHD10'</li><li>'ABHD11'</li><li>'ABHD12'</li><li>'ABHD12B'</li><li>'ABHD13'</li><li>'ABHD14A'</li><li>'ABHD14A-ACY1'</li><li>'ABHD14B'</li><li>'ABHD15'</li><li>'ABHD16A'</li><li>'ABHD16B'</li><li>'ABHD17A'</li><li>'ABHD17B'</li><li>'ABHD17C'</li><li>'ABHD2'</li><li>'ABHD3'</li><li>'ABHD4'</li><li>'ABHD5'</li><li>'ABHD6'</li><li>'ABHD8'</li><li>'ABI1'</li><li>'ABI2'</li><li>'ABI3'</li><li>'ABI3BP'</li><li>'ABL1'</li><li>'ABL2'</li><li>'ABLIM1'</li><li>'ABLIM2'</li><li>'ABLIM3'</li><li>'ABO'</li><li>'ABR'</li><li>'ABRA'</li><li>'ABRACL'</li><li>'ABT1'</li><li>'ABTB1'</li><li>'ABTB2'</li><li>'ACAA1'</li><li>'ACAA2'</li><li>'ACACA'</li><li>'ACACB'</li><li>'ACAD10'</li><li>'ACAD11'</li><li>'ACAD8'</li><li>'ACAD9'</li><li>'ACADL'</li><li>'ACADM'</li><li>'ACADS'</li><li>'ACADSB'</li><li>'ACADVL'</li><li>'ACAN'</li><li>'ACAP1'</li><li>'ACAP2'</li><li>'ACAP3'</li><li>'ACAT1'</li><li>'ACAT2'</li><li>'ACBD3'</li><li>'ACBD4'</li><li>'ACBD5'</li><li>'ACBD6'</li><li>'ACBD7'</li><li>'ACCS'</li><li>'ACCSL'</li><li>'ACD'</li><li>'ACE'</li><li>'ACE2'</li><li>'ACER1'</li><li>'ACER2'</li><li>'ACER3'</li><li>'ACHE'</li><li>'ACIN1'</li><li>'ACKR2'</li><li>'ACKR3'</li><li>'ACKR4'</li><li>'ACLY'</li><li>'ACMSD'</li><li>'ACO1'</li><li>'ACO2'</li><li>'ACOT1'</li><li>'ACOT11'</li><li>'ACOT12'</li><li>'ACOT13'</li><li>'ACOT2'</li><li>'ACOT4'</li><li>'ACOT6'</li><li>'ACOT7'</li><li>'ACOT8'</li><li>'ACOT9'</li><li>'ACOX1'</li><li>'ACOX2'</li><li>'ACOX3'</li><li>'ACOXL'</li><li>'ACP1'</li><li>'ACP2'</li><li>'ACP5'</li><li>'ACP6'</li><li>'ACPP'</li><li>'ACR'</li><li>'ACRBP'</li><li>'ACRV1'</li><li>'ACSBG1'</li><li>'ACSBG2'</li><li>'ACSF2'</li><li>'ACSF3'</li><li>'ACSL1'</li><li>'ACSL3'</li><li>'ACSL4'</li><li>'ACSL5'</li><li>'ACSL6'</li><li>'ACSM1'</li><li>'ACSM2A'</li><li>'ACSM2B'</li><li>'ACSM3'</li><li>'ACSM4'</li><li>'ACSM5'</li><li>'ACSS1'</li><li>'ACSS2'</li><li>'ACSS3'</li><li>'ACTA1'</li><li>'ACTA2'</li><li>'ACTB'</li><li>'ACTBL2'</li><li>'ACTC1'</li><li>'ACTG1'</li><li>'ACTG2'</li><li>⋯</li><li>'ZNF677'</li><li>'ZNF678'</li><li>'ZNF679'</li><li>'ZNF680'</li><li>'ZNF681'</li><li>'ZNF682'</li><li>'ZNF683'</li><li>'ZNF684'</li><li>'ZNF687'</li><li>'ZNF688'</li><li>'ZNF689'</li><li>'ZNF69'</li><li>'ZNF691'</li><li>'ZNF692'</li><li>'ZNF695'</li><li>'ZNF696'</li><li>'ZNF697'</li><li>'ZNF699'</li><li>'ZNF7'</li><li>'ZNF70'</li><li>'ZNF700'</li><li>'ZNF701'</li><li>'ZNF703'</li><li>'ZNF704'</li><li>'ZNF705A'</li><li>'ZNF705B'</li><li>'ZNF705D'</li><li>'ZNF705E'</li><li>'ZNF705G'</li><li>'ZNF706'</li><li>'ZNF707'</li><li>'ZNF708'</li><li>'ZNF709'</li><li>'ZNF71'</li><li>'ZNF710'</li><li>'ZNF711'</li><li>'ZNF713'</li><li>'ZNF714'</li><li>'ZNF716'</li><li>'ZNF717'</li><li>'ZNF718'</li><li>'ZNF720'</li><li>'ZNF721'</li><li>'ZNF723'</li><li>'ZNF726'</li><li>'ZNF727'</li><li>'ZNF728'</li><li>'ZNF729'</li><li>'ZNF730'</li><li>'ZNF732'</li><li>'ZNF736'</li><li>'ZNF737'</li><li>'ZNF738'</li><li>'ZNF74'</li><li>'ZNF740'</li><li>'ZNF746'</li><li>'ZNF747'</li><li>'ZNF749'</li><li>'ZNF750'</li><li>'ZNF75A'</li><li>'ZNF75D'</li><li>'ZNF76'</li><li>'ZNF761'</li><li>'ZNF763'</li><li>'ZNF764'</li><li>'ZNF765'</li><li>'ZNF766'</li><li>'ZNF768'</li><li>'ZNF77'</li><li>'ZNF770'</li><li>'ZNF771'</li><li>'ZNF772'</li><li>'ZNF773'</li><li>'ZNF774'</li><li>'ZNF775'</li><li>'ZNF776'</li><li>'ZNF777'</li><li>'ZNF778'</li><li>'ZNF780A'</li><li>'ZNF780B'</li><li>'ZNF781'</li><li>'ZNF782'</li><li>'ZNF783'</li><li>'ZNF784'</li><li>'ZNF785'</li><li>'ZNF786'</li><li>'ZNF787'</li><li>'ZNF789'</li><li>'ZNF79'</li><li>'ZNF790'</li><li>'ZNF791'</li><li>'ZNF792'</li><li>'ZNF793'</li><li>'ZNF799'</li><li>'ZNF8'</li><li>'ZNF80'</li><li>'ZNF800'</li><li>'ZNF804A'</li><li>'ZNF804B'</li><li>'ZNF805'</li><li>'ZNF808'</li><li>'ZNF81'</li><li>'ZNF813'</li><li>'ZNF814'</li><li>'ZNF816'</li><li>'ZNF816-ZNF321P'</li><li>'ZNF821'</li><li>'ZNF823'</li><li>'ZNF827'</li><li>'ZNF829'</li><li>'ZNF83'</li><li>'ZNF830'</li><li>'ZNF831'</li><li>'ZNF835'</li><li>'ZNF836'</li><li>'ZNF837'</li><li>'ZNF839'</li><li>'ZNF84'</li><li>'ZNF841'</li><li>'ZNF843'</li><li>'ZNF844'</li><li>'ZNF845'</li><li>'ZNF846'</li><li>'ZNF85'</li><li>'ZNF850'</li><li>'ZNF852'</li><li>'ZNF853'</li><li>'ZNF860'</li><li>'ZNF862'</li><li>'ZNF865'</li><li>'ZNF878'</li><li>'ZNF879'</li><li>'ZNF880'</li><li>'ZNF888'</li><li>'ZNF891'</li><li>'ZNF90'</li><li>'ZNF91'</li><li>'ZNF92'</li><li>'ZNF93'</li><li>'ZNF98'</li><li>'ZNF99'</li><li>'ZNFX1'</li><li>'ZNHIT1'</li><li>'ZNHIT2'</li><li>'ZNHIT3'</li><li>'ZNHIT6'</li><li>'ZNRD1'</li><li>'ZNRF1'</li><li>'ZNRF2'</li><li>'ZNRF3'</li><li>'ZNRF4'</li><li>'ZP1'</li><li>'ZP2'</li><li>'ZP3'</li><li>'ZP4'</li><li>'ZPBP'</li><li>'ZPBP2'</li><li>'ZPLD1'</li><li>'ZRANB1'</li><li>'ZRANB2'</li><li>'ZRANB3'</li><li>'ZRSR2'</li><li>'ZSCAN1'</li><li>'ZSCAN10'</li><li>'ZSCAN12'</li><li>'ZSCAN16'</li><li>'ZSCAN18'</li><li>'ZSCAN2'</li><li>'ZSCAN20'</li><li>'ZSCAN21'</li><li>'ZSCAN22'</li><li>'ZSCAN23'</li><li>'ZSCAN25'</li><li>'ZSCAN29'</li><li>'ZSCAN30'</li><li>'ZSCAN31'</li><li>'ZSCAN32'</li><li>'ZSCAN4'</li><li>'ZSCAN5A'</li><li>'ZSCAN5B'</li><li>'ZSCAN5C'</li><li>'ZSCAN9'</li><li>'ZSWIM1'</li><li>'ZSWIM2'</li><li>'ZSWIM3'</li><li>'ZSWIM4'</li><li>'ZSWIM5'</li><li>'ZSWIM6'</li><li>'ZSWIM7'</li><li>'ZSWIM8'</li><li>'ZW10'</li><li>'ZWILCH'</li><li>'ZWINT'</li><li>'ZXDA'</li><li>'ZXDB'</li><li>'ZXDC'</li><li>'ZYG11A'</li><li>'ZYG11B'</li><li>'ZYX'</li><li>'ZZEF1'</li></ol>
+</div>
+</div>
+<div id="a615de52" class="cell" data-execution_count="232">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>significant_genes_uc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<div id="68f3a220" class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Get genes shared between the two conditions</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>gene.list <span class="ot">&lt;-</span> <span class="fu">intersect</span>(significant_genes_cd, significant_genes_uc)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>gene.list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
