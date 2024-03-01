@@ -1,0 +1,52 @@
+Best Hyperparameters for Logistic Regression: {'C': 10.0, 'solver': 'newton-cg'}
+Logistic Regression - Accuracy: 0.4583333333333333
+              precision    recall  f1-score   support
+
+           0       0.45      0.91      0.61        11
+           1       0.00      0.00      0.00         7
+           2       0.50      0.17      0.25         6
+
+    accuracy                           0.46        24
+   macro avg       0.32      0.36      0.29        24
+weighted avg       0.33      0.46      0.34        24
+
+-----------------------------------------
+Best Hyperparameters for Support Vector Machine: {'C': 0.1, 'kernel': 'poly'}
+Support Vector Machine - Accuracy: 0.4166666666666667
+              precision    recall  f1-score   support
+
+           0       0.43      0.91      0.59        11
+           1       0.00      0.00      0.00         7
+           2       0.00      0.00      0.00         6
+
+    accuracy                           0.42        24
+   macro avg       0.14      0.30      0.20        24
+weighted avg       0.20      0.42      0.27        24
+
+-----------------------------------------
+Best Hyperparameters for Random Forest: {'max_depth': 2, 'n_estimators': 5}
+Random Forest - Accuracy: 0.5
+              precision    recall  f1-score   support
+
+           0       0.54      0.64      0.58        11
+           1       0.50      0.14      0.22         7
+           2       0.44      0.67      0.53         6
+
+    accuracy                           0.50        24
+   macro avg       0.49      0.48      0.45        24
+weighted avg       0.50      0.50      0.47        24
+
+-----------------------------------------
+Best Hyperparameters for CatBoost: {'depth': 4, 'iterations': 40, 'l2_leaf_reg': 3, 'learning_rate': 0.5}
+CatBoost - Accuracy: 0.625
+              precision    recall  f1-score   support
+
+           0       0.57      0.73      0.64        11
+           1       0.75      0.43      0.55         7
+           2       0.67      0.67      0.67         6
+
+    accuracy                           0.62        24
+   macro avg       0.66      0.61      0.62        24
+weighted avg       0.65      0.62      0.62        24
+
+-----------------------------------------
