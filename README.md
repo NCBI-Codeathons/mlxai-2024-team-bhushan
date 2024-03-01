@@ -17,7 +17,9 @@ List of participants and affiliations:
 
 The scientific goal of the project is to build AI/ML model to predict the impact of a bacterial species on human intestinal function in inflammatory bowel diseases (IBD), specifying, drug absorption & metabolism.
 
-## Initial Approach
+## Approach
+
+### Initial Approach
 
 1. Find changes in genes of interest (drug absorption, metabolism) due to IBD
     1. Find pharmacokinetic response of IBD patients to drugs, or
@@ -30,7 +32,7 @@ The scientific goal of the project is to build AI/ML model to predict the impact
     3. Classify bacterial species that similarly affect (similar) genes/pathways
     4. Predict drug absorption/metabolism based upon this
 
-## Modified Approach
+### Modified Approach
 
 - Add principal component analysis (PCA) to identify significant components (bacteria)
 
@@ -38,6 +40,7 @@ The scientific goal of the project is to build AI/ML model to predict the impact
 
 Data is collected from Priya, S. et al. paper listed on reference section. [Supplementary Tables](https://static-content.springer.com/esm/art%3A10.1038%2Fs41564-022-01121-z/MediaObjects/41564_2022_1121_MOESM2_ESM.zip)
 
+- Metadata: `Supplementary Table 1`
 - Paired data
   - RNAseq of colon (~16k genes)
   - Abundance (~700) of gut bacterial species `Supplementary Table 13`
