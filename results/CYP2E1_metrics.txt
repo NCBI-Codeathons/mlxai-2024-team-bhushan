@@ -1,0 +1,52 @@
+Best Hyperparameters for Logistic Regression: {'C': 0.1, 'solver': 'sag'}
+Logistic Regression - Accuracy: 0.43478260869565216
+              precision    recall  f1-score   support
+
+           0       0.47      0.82      0.60        11
+           1       0.33      0.10      0.15        10
+           2       0.00      0.00      0.00         2
+
+    accuracy                           0.43        23
+   macro avg       0.27      0.31      0.25        23
+weighted avg       0.37      0.43      0.35        23
+
+-----------------------------------------
+Best Hyperparameters for Support Vector Machine: {'C': 1.0, 'kernel': 'linear'}
+Support Vector Machine - Accuracy: 0.5217391304347826
+              precision    recall  f1-score   support
+
+           0       0.50      0.82      0.62        11
+           1       0.60      0.30      0.40        10
+           2       0.00      0.00      0.00         2
+
+    accuracy                           0.52        23
+   macro avg       0.37      0.37      0.34        23
+weighted avg       0.50      0.52      0.47        23
+
+-----------------------------------------
+Best Hyperparameters for Random Forest: {'max_depth': 5, 'n_estimators': 5}
+Random Forest - Accuracy: 0.4782608695652174
+              precision    recall  f1-score   support
+
+           0       0.45      0.45      0.45        11
+           1       0.50      0.60      0.55        10
+           2       0.00      0.00      0.00         2
+
+    accuracy                           0.48        23
+   macro avg       0.32      0.35      0.33        23
+weighted avg       0.43      0.48      0.45        23
+
+-----------------------------------------
+Best Hyperparameters for CatBoost: {'depth': 2, 'iterations': 100, 'l2_leaf_reg': 1, 'learning_rate': 0.5}
+CatBoost - Accuracy: 0.4782608695652174
+              precision    recall  f1-score   support
+
+           0       0.45      0.45      0.45        11
+           1       0.50      0.60      0.55        10
+           2       0.00      0.00      0.00         2
+
+    accuracy                           0.48        23
+   macro avg       0.32      0.35      0.33        23
+weighted avg       0.43      0.48      0.45        23
+
+-----------------------------------------
