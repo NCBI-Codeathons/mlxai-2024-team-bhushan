@@ -3,21 +3,21 @@
 List of participants and affiliations:
 
 - Abhinav Bhushan, Illinois Institute of Technology (Team Leader)
-- John Arnn, DHHS
-- Karan Jogi, DPI
-- Jooho Lee, University of Chicago
-- Viktoriia Liu
-- Gayathri Jahan Mohan
-- Soham Shirolkar
-- Gobikrishnan Subramaniam
 - Abhinav Sur, NICHD
-- Christopher Tang
+- Christopher Tang (Tech Lead)
+- David Cooper
+- Gayathri Jahan Mohan
+- Gobikrishnan Subramaniam, Queen's University
+- Jooho Lee, D4CG, University of Chicago
+- Karan Jogi, Discovery Partners Institute
+- Soham Shirolkar, University of South Florida
+- Viktoriia Liu
 
 ## Project Goals
 
 The scientific goal of the project is to build AI/ML model to predict the impact of a bacterial species on human intestinal function in inflammatory bowel diseases (IBD), specifying, drug absorption & metabolism.
 
-## Approach
+## Initial Approach
 
 1. Find changes in genes of interest (drug absorption, metabolism) due to IBD
     1. Find pharmacokinetic response of IBD patients to drugs, or
@@ -30,16 +30,28 @@ The scientific goal of the project is to build AI/ML model to predict the impact
     3. Classify bacterial species that similarly affect (similar) genes/pathways
     4. Predict drug absorption/metabolism based upon this
 
+## Modified Approach
+
+- Add principal component analysis (PCA) to identify significant components (bacteria)
+
 ## Collected data
 
-- The abundance of bacterial species in the gut microbiota, [Supplementary Table 13](https://static-content.springer.com/esm/art%3A10.1038%2Fs41564-022-01121-z/MediaObjects/41564_2022_1121_MOESM2_ESM.zip) in Priya, S. et al.
-- [Additional file 4: Table S3](https://static-content.springer.com/esm/art%3A10.1186%2Fs13059-022-02643-9/MediaObjects/13059_2022_2643_MOESM4_ESM.xlsx) [Additional file 7: Table S6](https://static-content.springer.com/esm/art%3A10.1186%2Fs13059-022-02643-9/MediaObjects/13059_2022_2643_MOESM7_ESM.csv) in Zhou, M. el al.
+Data is collected from Priya, S. et al. paper listed on reference section. [Supplementary Tables](https://static-content.springer.com/esm/art%3A10.1038%2Fs41564-022-01121-z/MediaObjects/41564_2022_1121_MOESM2_ESM.zip)
+
+- Paired data
+  - RNAseq of colon (~16k genes)
+  - Abundance (~700) of gut bacterial species `Supplementary Table 13`
+
+For future use:
+
 - A list of genes by isolate: mapped with uniprod_id with [Kyoto Encyclopedia of Genes and Genomes (KEGG) API](https://www.kegg.jp/kegg/rest/keggapi.html)
 - ID mapping: UniProtKB_AC-ID (Accession ID) to UniRef50 (Cluster ID)
 
 ## Results
 
 ## Future Work
+
+- pharmacoketic profile (PK) of drug
 
 ## References
 
