@@ -42,6 +42,11 @@ Data is collected from Priya, S. et al. paper listed on reference section. [Supp
   - RNAseq of colon (~16k genes)
   - Abundance (~700) of gut bacterial species `Supplementary Table 13`
 
+For future use:
+
+- A list of genes by isolate: mapped with uniprod_id with [Kyoto Encyclopedia of Genes and Genomes (KEGG) API](https://www.kegg.jp/kegg/rest/keggapi.html)
+- ID mapping: UniProtKB_AC-ID (Accession ID) to UniRef50 (Cluster ID)
+
 ## Results
 
 ## Future Work
@@ -55,7 +60,7 @@ Priya, S., Burns, M.B., Ward, T. et al. Identification of shared and disease-spe
 Zhou, H., Beltrán, J.F. & Brito, I.L. Host-microbiome protein-protein interactions capture disease-relevant pathways. Genome Biol 23, 72 (2022). https://doi.org/10.1186/s13059-022-02643-9
 
 ## NCBI Codeathon Disclaimer
+
 This software was created as part of an NCBI codeathon, a hackathon-style event focused on rapid innovation. While we encourage you to explore and adapt this code, please be aware that NCBI does not provide ongoing support for it.
 
 For general questions about NCBI software and tools, please visit: [NCBI Contact Page](https://www.ncbi.nlm.nih.gov/home/about/contact/)
-

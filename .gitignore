@@ -1,0 +1,5 @@
+# pyenv artifacts
+.python-version
+
+# notebook server artifacts
+notebooks/.ipynb_checkpoints/
